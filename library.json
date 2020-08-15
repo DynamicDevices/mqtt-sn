@@ -12,15 +12,5 @@
     "platforms": [
         "espressif8266",
         "espressif32"
-    ],
-    "examples": [
-    {
-        "name": "GettingStarted",
-        "base": "examples/gettingstarted",
-        "files": [
-            "platformio.ini",
-            "main.cpp"
-        ]
-    }
     ]
 }

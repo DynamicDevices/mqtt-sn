@@ -82,7 +82,7 @@ unsigned my_cancel_timer(void* userData)
     printf("Cancel timer\n");
 
     timer.deleteTimer(timerId);
-    
+
     return (unsigned)(millis() - timerStartMs); /* return number of elapsed milliseconds */
 }
 
@@ -91,7 +91,7 @@ void my_message_handler(void* userData, const MqttsnMessageInfo* msgInfo)
    /* handle application message */
    printf("Application message");
 }
- 
+
 // MQTT-SN connect callback complete
 
 void my_connect_complete(void* userData, MqttsnAsyncOpStatus status)
@@ -133,7 +133,7 @@ void my_subscribe_complete(void* userData, MqttsnAsyncOpStatus status, MqttsnQoS
     isErrored = true;
   }
 }
- 
+
 // MQTT-SN publish complete
 
 void my_publish_complete(void* userData, MqttsnAsyncOpStatus status)
@@ -147,7 +147,7 @@ void my_publish_complete(void* userData, MqttsnAsyncOpStatus status)
     isErrored = true;
   }
 }
- 
+
 // Main functions
 
 void setup() {
@@ -201,13 +201,20 @@ void loop() {
   WiFi.begin(SSID, PASSWORD);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
-    printf("Connecting to WiFi..\n");
+    printf("Connecting to WiFi (%d)\n", WiFi.status());
+
+    if(WiFi.status() == WL_CONNECT_FAILED)
+      WiFi.begin(SSID, PASSWORD);
   }
   printf("Connected to WiFi as %s\n", WiFi.localIP().toString().c_str());
 
+  delay(10);
+
   // Listen on UDP server port
   udp.begin(UDP_PORT);
-  
+
+  delay(10);
+
   // Connect
   printf("- Connect client\n");
   result = mqttsn_client_connect(client, clientId, 60, true, NULL, &my_connect_complete, NULL);
@@ -216,12 +223,13 @@ void loop() {
   {
     handleUDPRxComms();
     timer.run();
+    delay(10);
   }
-  
+
   // Subscribe to something
- 
+
   mqttsn_client_subscribe(
-    client, 
+    client,
     SUB_TOPIC,
     MqttsnQoS_ExactlyOnceDelivery, /* max QoS */
     &my_subscribe_complete,
@@ -231,17 +239,18 @@ void loop() {
   {
     handleUDPRxComms();
     timer.run();
+    delay(10);
   }
- 
+
   const char pubData[] = "Hello MQTT-SN World";
   int count = 10;
 
   while(count-- > 0) {
     printf("- Publish data\n");
-  
+
     // Publish something
     mqttsn_client_publish(
-      client, 
+      client,
       (const char *)PUB_TOPIC,
       (const unsigned char *)pubData,
       strlen(pubData),
@@ -254,8 +263,9 @@ void loop() {
     {
       handleUDPRxComms();
       timer.run();
+      delay(10);
     }
-  
+
     sleep(10);
   }
 
@@ -266,6 +276,7 @@ void loop() {
   while(isConnected && !isErrored) {
     handleUDPRxComms();
     timer.run();
+    delay(10);
   }
 
   // All Done
@@ -273,6 +284,8 @@ void loop() {
   mqttsn_client_free(client);
 
   while(1)
-      timer.run();
-
+  {
+    timer.run();
+    delay(10);
+  }
 }

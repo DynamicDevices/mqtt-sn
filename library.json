@@ -1,13 +1,28 @@
 {
     "name": "mqtt-sn",
-    "keywords": "ethernet, mqtt-sn, m2m, iot",
+    "version": "0.11.5",
     "description": "A client library for MQTT-SN messaging. MQTT-SN is a lightweight messaging protocol ideal for small devices. This library allows you to send and receive MQTT-SN messages. This work is based on https://github.com/arobenko/mqtt-sn ",
-    "license": "GPL-3.0-only",
+    "keywords": "ethernet, mqtt-sn, m2m, iot",
     "repository": {
         "type": "git",
         "url": "https://github.com/DynamicDevices/mqtt-sn.git"
     },
-    "version": "0.11.4",
+    "authors":
+    [
+    {
+      "name": "Alex Robenko",
+      "email": "arobenko@gmail.com",
+      "url": "https://github.com/arobenko"
+    },
+    {
+      "name": "Alex Lennon",
+      "email": "ajlennon@dynamicdevices.co.uk",
+      "url": "https://github.com/DynamicDevices",
+      "maintainer": true
+    }
+    ],
+    "license": "GPL-3.0-only",
+    "homepage": "https://github.com/DynamicDevices/mqtt-sn",
     "frameworks": "arduino",
     "platforms": [
         "espressif8266",

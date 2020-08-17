@@ -23,11 +23,11 @@ Currently I am focussed on ESP32 and ESP8266 so this library will be released fo
 
 Rather than start from scratch I have chosed to make use of @arobenko's MQTT-SN implementation which can be found [here](https://github.com/arobenko/mqtt-sn).
 
-The upstream code is currently licensed under GPLv3 although this will be changing to MPL-2.0 [see](https://github.com/DynamicDevices/mqtt-sn/issues/1).
+The upstream code is currently licensed under GPLv3 although this will be changing to MPL-2.0 see [here](https://github.com/DynamicDevices/mqtt-sn/issues/1).
 
 As such the intention is that this library packaging the upstream code will follow the upstream license.
 
-# State of play and Roadmap
+# State of Play and Roadmap
 
 - The library currently includes a working example of MQTT-SN message publishing tested on the ESP32
 - The library is a "cut and paste" of the output of the Alex Robenko's MQTT-SN repo build process. In future this library needs to better integrate with the upstream build system.

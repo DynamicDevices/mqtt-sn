@@ -6,10 +6,10 @@
 #include "PubSubClientSN.h"
 
 // Defines
-#define SSID "guest"
-#define PASSWORD ""
+#define SSID "SSID_HERE"
+#define PASSWORD "PASSWORD_HERE"
 
-#define UDP_ADDRESS "192.168.0.219"
+#define UDP_ADDRESS "MQTTSN_GATEWAY_HERE"
 #define UDP_PORT 10000
 
 #define SUB_TOPIC "my/sub/topic/#"
@@ -21,11 +21,15 @@ void callback(char* topic, byte* payload, unsigned int length);
 // Statics
 
 PubSubClient pubSubClient(UDP_ADDRESS, UDP_PORT, callback);
+SimpleTimerUD pubTimer;
 
 // Support functions
 
 void callback(char* topic, byte* payload, unsigned int length) {
-  // handle message arrived
+
+   /* handle application message */
+   printf("Rx Message: %s %s\n", topic, payload);
+
 }
 
 String macToStr(const uint8_t* mac)
@@ -41,6 +45,30 @@ String macToStr(const uint8_t* mac)
 
 // Main functions
 
+void publication_callback(void *userData)
+{
+  static int counter = 0;
+  
+  String payload = "{\"micros\":";
+  payload += micros();
+  payload += ",\"counter\":";
+  payload += counter;
+  payload += "}";
+  
+  if (pubSubClient.connected()){
+    Serial.print("Sending payload: ");
+    Serial.println(payload);
+    
+    if (pubSubClient.publish(PUB_TOPIC, (char*) payload.c_str())) {
+      Serial.println("Publish ok");
+    }
+    else {
+      Serial.println("Publish failed");
+    }
+  }
+  ++counter;
+}
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
@@ -52,7 +80,7 @@ void setup() {
     delay(500);
     printf("Connecting to WiFi (%d)\n", WiFi.status());
 
-    if(WiFi.status() == WL_CONNECT_FAILED)
+    if(WiFi.status() == WL_CONNECT_FAILED || WiFi.status() == WL_DISCONNECTED)
       WiFi.begin(SSID, PASSWORD);
   }
   Serial.println("");
@@ -91,34 +119,24 @@ void setup() {
     else {
       Serial.println("Publish failed");
     }
+
+    if(pubSubClient.subscribe(SUB_TOPIC, 1)) {
+      Serial.println("Subscribe ok");
+    } else {
+      Serial.println("Subscribe failed");
+    }    
   }
   else {
     Serial.println("MQTT connect failed");
     Serial.println("Will reset and try again...");
     abort();
   }
+
+  pubTimer.setInterval(10000, publication_callback);
 }
 
 void loop() {
-  static int counter = 0;
-  
-  String payload = "{\"micros\":";
-  payload += micros();
-  payload += ",\"counter\":";
-  payload += counter;
-  payload += "}";
-  
-  if (pubSubClient.connected()){
-    Serial.print("Sending payload: ");
-    Serial.println(payload);
-    
-    if (pubSubClient.publish(PUB_TOPIC, (char*) payload.c_str())) {
-      Serial.println("Publish ok");
-    }
-    else {
-      Serial.println("Publish failed");
-    }
-  }
-  ++counter;
-  delay(5000);
+  pubSubClient.loop();
+  pubTimer.run();
+  delay(1000);
 }

@@ -32,7 +32,6 @@ As such the intention is that this library packaging the upstream code will foll
 - The library currently includes a working example of MQTT-SN message publishing tested on the ESP32
 - The library is a "cut and paste" of the output of the Alex Robenko's MQTT-SN repo build process. In future this library needs to better integrate with the upstream build system.
 - The library now uses Nick O'Leary's PubSubClient API so that developers can easily switch between MQTT and MQTT-SN
-- NOTE: ** Only publication is currently implemented ***
 
 # Maintainer / Feedback
 

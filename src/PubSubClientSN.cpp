@@ -15,14 +15,14 @@ void mqttsn_send(void* userData, const unsigned char* buf, unsigned bufLen, bool
     PubSubClient *psc = static_cast<PubSubClient *>(userData);
 
     if (broadcast) {
-      int success = psc->udp.beginPacket(IPAddress(255,255,255,255),psc->port);
+        psc->udp.beginPacket(IPAddress(255,255,255,255),psc->port);
     }
     else {
-      int success = psc->udp.beginPacket(psc->ip,psc->port);
+        psc->udp.beginPacket(psc->ip,psc->port);
     }
-    int tx = psc->udp.write(buf, bufLen);
+    psc->udp.write(buf, bufLen);
 
-    int success = psc->udp.endPacket();
+    psc->udp.endPacket();
 }
 
 void mqttsn_timer_callback(void *userData) {
@@ -50,10 +50,9 @@ unsigned mqttsn_cancel_timer(void* userData)
 
 void mqttsn_message_handler(void* userData, const MqttsnMessageInfo* msgInfo)
 {
-//   PubSubClient *psc = (PubSubClient *)userData;
+   PubSubClient *psc = (PubSubClient *)userData;
 
-   /* handle application message */
-   printf("Application message");
+   psc->callback( (char *)msgInfo->topic, (uint8_t *)msgInfo->msg, (unsigned int)msgInfo->msgLen);
 }
  
 // MQTT-SN connect callback complete
@@ -129,7 +128,6 @@ void mqttsn_publish_complete(void* userData, MqttsnAsyncOpStatus status)
 void PubSubClient::handleUDPRxComms() {
     int packetSize = udp.parsePacket();
     if(packetSize) {
-      printf("Rx Data\n");
       int rxd = udp.read(rxBuffer, sizeof(rxBuffer));
       unsigned consumed = mqttsn_client_process_data(_snClient, rxBuffer, rxd);
       if (consumed < rxd) {

@@ -1,7 +1,7 @@
 {
     "name": "mqtt-sn",
     "version": "0.11.6",
-    "description": "A client library for MQTT-SN messaging. MQTT-SN is a lightweight messaging protocol ideal for small devices. This library allows you to send and receive MQTT-SN messages. This work is based on https://github.com/arobenko/mqtt-sn ",
+    "description": "A client library for MQTT-SN messaging. MQTT-SN is a lightweight messaging protocol ideal for small devices. This library allows you to send and receive MQTT-SN messages. It uses the PubSubClient API to make it easy to switch between MQTT and MQTT-SN",
     "keywords": "ethernet, mqtt-sn, m2m, iot",
     "repository": {
         "type": "git",
